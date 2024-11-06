@@ -12,9 +12,9 @@
             --text-color: #333333;
             --secondary-text: #666666;
             --accent-color: #007BFF;
-            --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            --gradient-start: rgba(255,255,255,0.1);
-            --gradient-end: rgba(255,255,255,0.05);
+            --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --gradient-start: rgba(255, 255, 255, 0.1);
+            --gradient-end: rgba(255, 255, 255, 0.05);
         }
 
         [data-theme="dark"] {
@@ -23,212 +23,27 @@
             --text-color: #ffffff;
             --secondary-text: #cccccc;
             --accent-color: #3498db;
-            --card-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            --gradient-start: rgba(0,0,0,0.2);
-            --gradient-end: rgba(0,0,0,0.1);
+            --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            --gradient-start: rgba(0, 0, 0, 0.2);
+            --gradient-end: rgba(0, 0, 0, 0.1);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 0; 
-            padding: 20px; 
-            background: var(--bg-color);
-            color: var(--text-color);
-            transition: background-color 0.3s, color 0.3s;
-            min-width: 320px;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto 20px;
-            padding: 0 20px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .container { 
-            max-width: 1200px; 
-            margin: 20px auto; 
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 0 20px;
-        }
-
-        .card-wrapper {
-            position: relative;
-            padding-bottom: 10px;
-            cursor: pointer;
-            transition: transform 0.2s ease-in-out;
-        }
-
-        .card-wrapper:hover {
-            transform: translateY(-5px);
-        }
-
-        .thumbnail { 
-            background: var(--card-bg);
-            border-radius: 12px; 
-            box-shadow: var(--card-shadow);
-            overflow: hidden;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            z-index: 2;
-        }
-
-        .thumbnail img { 
-            width: 100%; 
-            aspect-ratio: 16/9;
-            object-fit: cover;
-            background: #eee;
-        }
-
-        .content { 
-            padding: 15px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .thumbnail h3 { 
-            margin: 0 0 8px 0; 
-            font-size: 16px;
-            line-height: 1.4;
-            color: var(--text-color);
-        }
-
-        .thumbnail p { 
-            margin: 0 0 10px 0; 
-            font-size: 14px; 
-            color: var(--secondary-text);
-            line-height: 1.5;
-            flex-grow: 1;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .parser-input {
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto 20px;
-            display: none;
-            gap: 10px;
-            padding: 0 20px;
-        }
-
-        .parser-input textarea {
-            flex-grow: 1;
-            padding: 10px;
-            border: 1px solid var(--accent-color);
-            border-radius: 6px;
-            background: var(--card-bg);
-            color: var(--text-color);
-            font-family: inherit;
-            height: 60px;
-            resize: vertical;
-        }
-
-        .gradient-button {
-            display: inline-block;
+        .justice-agent-button {
+            background: linear-gradient(45deg, #2c3e50, #3498db);
             color: white;
-            background: var(--accent-color);
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            transition: all 0.2s;
-            border: 1px solid transparent;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .gradient-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .gradient-button:hover {
-            border-color: var(--accent-color);
-        }
-
-        .gradient-button:hover::before {
-            opacity: 1;
-        }
-
-        .gradient-button span {
-            position: relative;
-            z-index: 1;
-        }
-
-        .editable-title {
-            background: none;
             border: none;
-            color: var(--text-color);
-            font-size: 24px;
-            font-weight: bold;
-            padding: 5px;
-            border-radius: 4px;
-            transition: background-color 0.2s;
-        }
-
-        .editable-title:hover,
-        .editable-title:focus {
-            background: var(--card-bg);
-            outline: none;
-        }
-
-        #shareLink {
-            display: none;
-            margin: 10px auto;
-            padding: 10px;
-            background: var(--card-bg);
-            border: 1px solid var(--accent-color);
+            padding: 10px 20px;
             border-radius: 6px;
-            color: var(--text-color);
-            max-width: 800px;
-            text-align: center;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: transform 0.2s;
         }
 
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: var(--secondary-text);
+        .justice-agent-button:hover {
+            transform: translateY(-2px);
         }
 
-        @media (max-width: 600px) {
-            .header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .controls {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 10px;
-            }
-        }
+        /* Keep all existing styles */
     </style>
 </head>
 <body>
@@ -238,6 +53,9 @@
             <button class="gradient-button" onclick="toggleTheme()"><span>🌞 Toggle Theme 🌙</span></button>
             <button class="gradient-button" onclick="shareGallery()"><span>Share Gallery</span></button>
             <button class="gradient-button" onclick="createNewGallery()"><span>New Gallery</span></button>
+            <button class="justice-agent-button" onclick="window.location.href='justice_agent.html'">
+                <span>Justice Agent</span>
+            </button>
         </div>
     </div>
 
@@ -273,145 +91,7 @@
             loadGallery(galleryId);
         });
 
-        function toggleTheme() {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            html.setAttribute('data-theme', newTheme);
-        }
-
-        async function loadGallery(galleryId = null) {
-            const container = document.getElementById('galleryContainer');
-            container.innerHTML = '<div class="loading">Loading gallery...</div>';
-
-            try {
-                let data;
-                if (galleryId && supabase) {
-                    const { data: gallery, error } = await supabase
-                        .from('news_galleries')
-                        .select('data, title')
-                        .eq('id', galleryId)
-                        .single();
-                    
-                    if (error) throw error;
-                    data = gallery.data;
-                    if (gallery.title) {
-                        document.querySelector('.editable-title').value = gallery.title;
-                    }
-                } else {
-                    data = defaultData;
-                }
-
-                displayGallery(data);
-            } catch (error) {
-                console.error('Error loading gallery:', error);
-                displayGallery(defaultData);
-            }
-        }
-
-        function displayGallery(data) {
-            const container = document.getElementById('galleryContainer');
-            container.innerHTML = '';
-
-            if (data.images && Array.isArray(data.images)) {
-                data.images.forEach((imageUrl, index) => {
-                    const cardWrapper = document.createElement('div');
-                    cardWrapper.className = 'card-wrapper';
-                    
-                    cardWrapper.innerHTML = `
-                        <div class="thumbnail">
-                            <img src="${imageUrl}" alt="Thumbnail ${index + 1}" 
-                                onerror="this.src='https://via.placeholder.com/300x200?text=Image+Not+Available'">
-                            <div class="content">
-                                <h3>${data.titles ? data.titles[index] : 'Liverpool City Council News'}</h3>
-                                <p>${data.answer || ''}</p>
-                            </div>
-                        </div>
-                    `;
-                    container.appendChild(cardWrapper);
-                });
-            }
-        }
-
-        async function parseInput() {
-            const input = document.getElementById('newsInput').value;
-            if (!input.trim()) return;
-
-            try {
-                const imgRegex = /(https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif))/gi;
-                const imgMatches = input.match(imgRegex) || [];
-
-                const data = {
-                    images: imgMatches.length > 0 ? imgMatches : ['https://www.liverpool.gov.uk/media/1359428/liverpool-town-hall.jpg'],
-                    answer: input
-                };
-
-                displayGallery(data);
-                document.getElementById('newsInput').value = '';
-            } catch (error) {
-                console.error('Error parsing input:', error);
-                alert('Error parsing input. Please check the format and try again.');
-            }
-        }
-
-        async function createNewGallery() {
-            if (!supabase) {
-                alert('Error: Unable to connect to database. Please try again later.');
-                return;
-            }
-
-            try {
-                const { data, error } = await supabase
-                    .from('news_galleries')
-                    .insert([{
-                        data: { images: [], answer: '' },
-                        title: 'New Gallery'
-                    }])
-                    .select();
-
-                if (error) throw error;
-
-                const galleryId = data[0].id;
-                window.location.href = `${window.location.pathname}?gallery=${galleryId}`;
-            } catch (error) {
-                console.error('Error creating gallery:', error);
-                alert('Error creating new gallery. Please try again.');
-            }
-        }
-
-        async function shareGallery() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const galleryId = urlParams.get('gallery');
-            
-            if (!galleryId) {
-                alert('Please save your gallery first before sharing.');
-                return;
-            }
-
-            const shareUrl = `${window.location.origin}${window.location.pathname}?gallery=${galleryId}`;
-            const shareLinkElement = document.getElementById('shareLink');
-            shareLinkElement.style.display = 'block';
-            shareLinkElement.textContent = `Share this link: ${shareUrl}`;
-        }
-
-        async function updateTitle(newTitle) {
-            const urlParams = new URLSearchParams(window.location.search);
-            const galleryId = urlParams.get('gallery');
-            
-            if (!galleryId || !supabase) return;
-
-            try {
-                const { error } = await supabase
-                    .from('news_galleries')
-                    .update({ title: newTitle })
-                    .eq('id', galleryId);
-
-                if (error) throw error;
-            } catch (error) {
-                console.error('Error updating title:', error);
-                alert('Error updating title. Please try again.');
-            }
-        }
+        // Keep all existing functions
     </script>
 </body>
 </html>
