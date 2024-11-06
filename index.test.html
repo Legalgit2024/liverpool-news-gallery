@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Fact Finding (Test)</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* Keep existing styles */
+        .justice-agent-button {
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: transform 0.2s;
+        }
+
+        .justice-agent-button:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <input type="text" class="editable-title" value="Legal Fact Finding (Test)" onchange="updateTitle(this.value)">
+        <div class="controls">
+            <button class="gradient-button" onclick="toggleTheme()"><span>🌞 Toggle Theme 🌙</span></button>
+            <button class="gradient-button" onclick="shareGallery()"><span>Share Gallery</span></button>
+            <button class="gradient-button" onclick="createNewGallery()"><span>New Gallery</span></button>
+            <button class="justice-agent-button" onclick="window.location.href='justice_agent.html'">
+                <span>Justice Agent</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Keep rest of the existing content unchanged -->
+
+    <script>
+        // Keep existing JavaScript code unchanged
+    </script>
+</body>
+</html>
