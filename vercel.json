@@ -5,23 +5,13 @@
     {
       "src": "*.html",
       "use": "@vercel/static"
-    },
-    {
-      "src": "api.py",
-      "use": "@vercel/python"
     }
   ],
   "routes": [
-    {
-      "src": "/api/research",
-      "dest": "api.py"
-    },
     {
       "src": "/(.*)",
       "dest": "/$1"
     }
   ],
-  "env": {
-    "TAVILY_API_KEY": "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"
-  }
+  "public": true
 }
