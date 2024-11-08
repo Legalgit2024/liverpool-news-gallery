@@ -7,13 +7,13 @@ from typing import Dict, Any
 
 class LiverpoolLegalAgent:
     def __init__(self):
-        # Claude API setup
+        # Claude API setup with new credentials
         self.claude = anthropic.Client(
-            api_key="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"
+            api_key="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"
         )
-        self.model = "claude-3-opus-20240229"
+        self.model = "claude-3.5-sonnet:beta"
         
-        # Supabase setup with actual credentials
+        # Supabase setup
         self.supabase_url = "https://gzlsscfspnymadqtozhv.supabase.co"
         self.supabase_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6bHNzY2ZzcG55bWFkcXRvemh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjkxMTAzNjIsImV4cCI6MjA0NDY4NjM2Mn0.-IczsQ1LgwoPmXoi0hQblr1RA4JU9lyBOGxTpMB9SGU"
         self.supabase: Client = create_client(self.supabase_url, self.supabase_key)
@@ -190,6 +190,8 @@ def main():
     # Analyze document and store as evidence
     result = agent.analyze_legal_document(test_document)
     print(f"Evidence ID: {result['evidence_id']}")
+    print("\nAnalysis:")
+    print(result['analysis'])
     
     # Export evidence report
     report = agent.export_evidence_report(result['evidence_id'], format="txt")
