@@ -2,17 +2,41 @@ import anthropic
 import json
 import os
 from datetime import datetime
+from supabase import create_client, Client
+from typing import Dict, Any
 
-class LiverpoolResearchAgent:
+class LiverpoolLegalAgent:
     def __init__(self):
+        # Claude API setup
         self.claude = anthropic.Client(
             api_key="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"
         )
         self.model = "claude-3-opus-20240229"
+        
+        # Supabase setup for persistent storage
+        supabase_url = "https://your-supabase-project.supabase.co"
+        supabase_key = os.getenv("SUPABASE_KEY", "your-supabase-key")
+        self.supabase: Client = create_client(supabase_url, supabase_key)
+        
         self.legal_log = []
 
-    def analyze_legal_document(self, document_text):
-        """Analyze legal documents related to Liverpool FC"""
+    def store_evidence(self, evidence_data: Dict[str, Any]) -> str:
+        """Store legal evidence in Supabase"""
+        try:
+            # Add timestamp and unique identifier
+            evidence_data["timestamp"] = datetime.now().isoformat()
+            evidence_data["evidence_id"] = f"EV-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+            
+            # Store in Supabase
+            result = self.supabase.table("legal_evidence").insert(evidence_data).execute()
+            
+            return evidence_data["evidence_id"]
+        except Exception as e:
+            print(f"Error storing evidence: {e}")
+            return None
+
+    def analyze_legal_document(self, document_text: str) -> Dict[str, Any]:
+        """Analyze legal documents and store as evidence"""
         prompt = f"""Analyze this legal document related to Liverpool FC:
         {document_text}
         
@@ -23,6 +47,7 @@ class LiverpoolResearchAgent:
         4. Risk assessment
         5. Recommended actions
         6. Legal precedents
+        7. Evidence classification
         """
 
         response = self.claude.messages.create(
@@ -34,23 +59,22 @@ class LiverpoolResearchAgent:
             }]
         )
 
-        # Log the legal analysis
-        legal_entry = {
-            "timestamp": datetime.now().isoformat(),
+        # Prepare evidence data
+        evidence_data = {
             "document_type": "legal_analysis",
-            "findings": response.content,
+            "content": document_text,
+            "analysis": response.content,
+            "classification": "confidential",
+            "status": "active"
         }
-        self.legal_log.append(legal_entry)
         
-        return response.content
+        # Store in Supabase
+        evidence_id = self.store_evidence(evidence_data)
+        
+        return {"evidence_id": evidence_id, "analysis": response.content}
 
-    def save_legal_analysis(self, filename="legal_findings.json"):
-        """Save legal analysis to a JSON file"""
-        with open(filename, 'w') as f:
-            json.dump(self.legal_log, f, indent=2)
-
-    def review_compliance(self, topic):
-        """Review compliance requirements for specific topics"""
+    def review_compliance(self, topic: str) -> Dict[str, Any]:
+        """Review compliance and store findings"""
         prompt = f"""Review compliance requirements for Liverpool FC regarding:
         {topic}
         
@@ -61,6 +85,7 @@ class LiverpoolResearchAgent:
         4. Compliance deadlines
         5. Potential risks
         6. Mitigation strategies
+        7. Evidence requirements
         """
 
         response = self.claude.messages.create(
@@ -72,18 +97,20 @@ class LiverpoolResearchAgent:
             }]
         )
         
-        # Log the compliance review
-        compliance_entry = {
-            "timestamp": datetime.now().isoformat(),
+        # Store compliance review as evidence
+        evidence_data = {
+            "document_type": "compliance_review",
             "topic": topic,
-            "compliance_review": response.content,
+            "findings": response.content,
+            "status": "active"
         }
-        self.legal_log.append(compliance_entry)
         
-        return response.content
+        evidence_id = self.store_evidence(evidence_data)
+        
+        return {"evidence_id": evidence_id, "review": response.content}
 
-    def analyze_contract(self, contract_text):
-        """Analyze contracts and agreements"""
+    def analyze_contract(self, contract_text: str) -> Dict[str, Any]:
+        """Analyze contracts and store as legal evidence"""
         prompt = f"""Analyze this contract/agreement:
         {contract_text}
         
@@ -94,6 +121,7 @@ class LiverpoolResearchAgent:
         4. Termination conditions
         5. Legal implications
         6. Recommended modifications
+        7. Evidence preservation requirements
         """
 
         response = self.claude.messages.create(
@@ -105,19 +133,63 @@ class LiverpoolResearchAgent:
             }]
         )
         
-        return response.content
+        # Store contract analysis as evidence
+        evidence_data = {
+            "document_type": "contract_analysis",
+            "content": contract_text,
+            "analysis": response.content,
+            "status": "active"
+        }
+        
+        evidence_id = self.store_evidence(evidence_data)
+        
+        return {"evidence_id": evidence_id, "analysis": response.content}
+
+    def retrieve_evidence(self, evidence_id: str) -> Dict[str, Any]:
+        """Retrieve stored evidence from Supabase"""
+        try:
+            result = self.supabase.table("legal_evidence").select("*").eq("evidence_id", evidence_id).execute()
+            return result.data[0] if result.data else None
+        except Exception as e:
+            print(f"Error retrieving evidence: {e}")
+            return None
+
+    def export_evidence_report(self, evidence_id: str, format: str = "json") -> str:
+        """Export evidence in specified format"""
+        evidence = self.retrieve_evidence(evidence_id)
+        if not evidence:
+            return None
+            
+        if format == "json":
+            return json.dumps(evidence, indent=2)
+        elif format == "txt":
+            return f"""
+Evidence Report
+ID: {evidence['evidence_id']}
+Type: {evidence['document_type']}
+Timestamp: {evidence['timestamp']}
+Status: {evidence['status']}
+Content: {evidence['content']}
+Analysis: {evidence['analysis']}
+            """
+        return None
 
 def main():
-    agent = LiverpoolResearchAgent()
+    agent = LiverpoolLegalAgent()
     
     # Example usage
-    legal_topic = "Player transfer agreement compliance"
-    compliance_review = agent.review_compliance(legal_topic)
-    print(f"Compliance review for {legal_topic}:")
-    print(compliance_review)
+    contract_text = """
+    [Example contract text for demonstration]
+    """
     
-    # Save legal analysis
-    agent.save_legal_analysis()
+    # Analyze contract and store as evidence
+    result = agent.analyze_contract(contract_text)
+    print(f"Evidence ID: {result['evidence_id']}")
+    
+    # Export evidence report
+    report = agent.export_evidence_report(result['evidence_id'], format="txt")
+    print("\nEvidence Report:")
+    print(report)
 
 if __name__ == "__main__":
     main()
