@@ -13,10 +13,10 @@ class LiverpoolLegalAgent:
         )
         self.model = "claude-3-opus-20240229"
         
-        # Supabase setup for persistent storage
-        supabase_url = "https://your-supabase-project.supabase.co"
-        supabase_key = os.getenv("SUPABASE_KEY", "your-supabase-key")
-        self.supabase: Client = create_client(supabase_url, supabase_key)
+        # Supabase setup with actual credentials
+        self.supabase_url = "https://gzlsscfspnymadqtozhv.supabase.co"
+        self.supabase_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6bHNzY2ZzcG55bWFkcXRvemh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjkxMTAzNjIsImV4cCI6MjA0NDY4NjM2Mn0.-IczsQ1LgwoPmXoi0hQblr1RA4JU9lyBOGxTpMB9SGU"
+        self.supabase: Client = create_client(self.supabase_url, self.supabase_key)
         
         self.legal_log = []
 
@@ -177,13 +177,18 @@ Analysis: {evidence['analysis']}
 def main():
     agent = LiverpoolLegalAgent()
     
-    # Example usage
-    contract_text = """
-    [Example contract text for demonstration]
+    # Example usage with test document
+    test_document = """
+    This is a test legal document for Liverpool FC regarding player transfer agreements.
+    The document outlines terms and conditions for player transfers, including:
+    1. Transfer fee structure
+    2. Payment schedules
+    3. Performance bonuses
+    4. Image rights
     """
     
-    # Analyze contract and store as evidence
-    result = agent.analyze_contract(contract_text)
+    # Analyze document and store as evidence
+    result = agent.analyze_legal_document(test_document)
     print(f"Evidence ID: {result['evidence_id']}")
     
     # Export evidence report
