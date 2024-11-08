@@ -1,17 +1,20 @@
-import anthropic
 import json
 import os
+import requests
 from datetime import datetime
 from supabase import create_client, Client
 from typing import Dict, Any
 
 class LiverpoolLegalAgent:
     def __init__(self):
-        # Claude API setup with new credentials
-        self.claude = anthropic.Client(
-            api_key="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"
-        )
-        self.model = "claude-3.5-sonnet:beta"
+        # OpenRouter setup
+        self.api_key = "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"
+        self.api_base = "https://openrouter.ai/api/v1"
+        self.headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "HTTP-Referer": "https://github.com/Legalgit2024/liverpool-news-gallery",
+            "Content-Type": "application/json"
+        }
         
         # Supabase setup
         self.supabase_url = "https://gzlsscfspnymadqtozhv.supabase.co"
@@ -19,6 +22,18 @@ class LiverpoolLegalAgent:
         self.supabase: Client = create_client(self.supabase_url, self.supabase_key)
         
         self.legal_log = []
+
+    def query_openrouter(self, messages):
+        """Send request to OpenRouter API"""
+        response = requests.post(
+            f"{self.api_base}/chat/completions",
+            headers=self.headers,
+            json={
+                "model": "anthropic/claude-3.5-sonnet:beta",
+                "messages": messages
+            }
+        )
+        return response.json()
 
     def store_evidence(self, evidence_data: Dict[str, Any]) -> str:
         """Store legal evidence in Supabase"""
@@ -37,33 +52,29 @@ class LiverpoolLegalAgent:
 
     def analyze_legal_document(self, document_text: str) -> Dict[str, Any]:
         """Analyze legal documents and store as evidence"""
-        prompt = f"""Analyze this legal document related to Liverpool FC:
-        {document_text}
-        
-        Please provide:
-        1. Legal implications
-        2. Key terms and conditions
-        3. Compliance requirements
-        4. Risk assessment
-        5. Recommended actions
-        6. Legal precedents
-        7. Evidence classification
-        """
+        messages = [{
+            "role": "user",
+            "content": f"""Analyze this legal document related to Liverpool FC:
+            {document_text}
+            
+            Please provide:
+            1. Legal implications
+            2. Key terms and conditions
+            3. Compliance requirements
+            4. Risk assessment
+            5. Recommended actions
+            6. Legal precedents
+            7. Evidence classification"""
+        }]
 
-        response = self.claude.messages.create(
-            model=self.model,
-            max_tokens=2000,
-            messages=[{
-                "role": "user",
-                "content": prompt
-            }]
-        )
+        response = self.query_openrouter(messages)
+        analysis = response['choices'][0]['message']['content']
 
         # Prepare evidence data
         evidence_data = {
             "document_type": "legal_analysis",
             "content": document_text,
-            "analysis": response.content,
+            "analysis": analysis,
             "classification": "confidential",
             "status": "active"
         }
@@ -71,79 +82,71 @@ class LiverpoolLegalAgent:
         # Store in Supabase
         evidence_id = self.store_evidence(evidence_data)
         
-        return {"evidence_id": evidence_id, "analysis": response.content}
+        return {"evidence_id": evidence_id, "analysis": analysis}
 
     def review_compliance(self, topic: str) -> Dict[str, Any]:
         """Review compliance and store findings"""
-        prompt = f"""Review compliance requirements for Liverpool FC regarding:
-        {topic}
-        
-        Please provide:
-        1. Regulatory requirements
-        2. Current compliance status
-        3. Required documentation
-        4. Compliance deadlines
-        5. Potential risks
-        6. Mitigation strategies
-        7. Evidence requirements
-        """
+        messages = [{
+            "role": "user",
+            "content": f"""Review compliance requirements for Liverpool FC regarding:
+            {topic}
+            
+            Please provide:
+            1. Regulatory requirements
+            2. Current compliance status
+            3. Required documentation
+            4. Compliance deadlines
+            5. Potential risks
+            6. Mitigation strategies
+            7. Evidence requirements"""
+        }]
 
-        response = self.claude.messages.create(
-            model=self.model,
-            max_tokens=1000,
-            messages=[{
-                "role": "user",
-                "content": prompt
-            }]
-        )
+        response = self.query_openrouter(messages)
+        review = response['choices'][0]['message']['content']
         
         # Store compliance review as evidence
         evidence_data = {
             "document_type": "compliance_review",
             "topic": topic,
-            "findings": response.content,
+            "findings": review,
             "status": "active"
         }
         
         evidence_id = self.store_evidence(evidence_data)
         
-        return {"evidence_id": evidence_id, "review": response.content}
+        return {"evidence_id": evidence_id, "review": review}
 
     def analyze_contract(self, contract_text: str) -> Dict[str, Any]:
         """Analyze contracts and store as legal evidence"""
-        prompt = f"""Analyze this contract/agreement:
-        {contract_text}
-        
-        Please provide:
-        1. Key terms analysis
-        2. Obligations and rights
-        3. Risk factors
-        4. Termination conditions
-        5. Legal implications
-        6. Recommended modifications
-        7. Evidence preservation requirements
-        """
+        messages = [{
+            "role": "user",
+            "content": f"""Analyze this contract/agreement:
+            {contract_text}
+            
+            Please provide:
+            1. Key terms analysis
+            2. Obligations and rights
+            3. Risk factors
+            4. Termination conditions
+            5. Legal implications
+            6. Recommended modifications
+            7. Evidence preservation requirements"""
+        }]
 
-        response = self.claude.messages.create(
-            model=self.model,
-            max_tokens=1500,
-            messages=[{
-                "role": "user",
-                "content": prompt
-            }]
-        )
+        response = self.query_openrouter(messages)
+        analysis = response['choices'][0]['message']['content']
         
         # Store contract analysis as evidence
         evidence_data = {
             "document_type": "contract_analysis",
             "content": contract_text,
-            "analysis": response.content,
+            "analysis": analysis,
             "status": "active"
         }
         
         evidence_id = self.store_evidence(evidence_data)
         
-        return {"evidence_id": evidence_id, "analysis": response.content}
+        return {"evidence_id": evidence_id, "analysis": analysis}
 
     def retrieve_evidence(self, evidence_id: str) -> Dict[str, Any]:
         """Retrieve stored evidence from Supabase"""
