@@ -1,13 +1,13 @@
-# Liverpool News Gallery Research Agent
+# Liverpool News Gallery Legal Files Agent
 
 ## Overview
-This repository includes a research agent powered by Claude AI that helps gather and analyze Liverpool FC news and information.
+This repository includes a legal files agent powered by Claude AI that helps gather, analyze, and manage Liverpool FC news and legal documentation.
 
 ## Features
-- Automated research on Liverpool FC topics
-- News article analysis
+- Automated legal document analysis
+- News article processing
 - Historical context gathering
-- Research logging and storage
+- Legal research logging and storage
 - JSON output for easy integration
 
 ## Setup
@@ -23,13 +23,13 @@ export CLAUDE_API_KEY="your-api-key"
 
 ## Usage
 ```python
-from research_agent import LiverpoolResearchAgent
+from Legal_files_agent import LiverpoolResearchAgent
 
 # Initialize the agent
 agent = LiverpoolResearchAgent()
 
 # Research a topic
-findings = agent.research_topic("Liverpool FC's 2024 season performance")
+findings = agent.research_topic("Liverpool FC's 2024 legal documentation")
 
 # Analyze a news article
 analysis = agent.analyze_news_article("Your article text here")
@@ -38,16 +38,18 @@ analysis = agent.analyze_news_article("Your article text here")
 agent.save_research()
 ```
 
-## Research Capabilities
-- Historical context analysis
+## Legal Research Capabilities
+- Legal document analysis
+- Historical context review
 - Key facts and figures compilation
 - Recent developments tracking
-- Quote collection
 - Source verification
+- Legal compliance checking
 
 ## Output
 Research findings are saved in JSON format with:
 - Timestamp
 - Topic
-- Detailed findings
-- Analysis results
+- Legal analysis
+- Document references
+- Compliance notes
