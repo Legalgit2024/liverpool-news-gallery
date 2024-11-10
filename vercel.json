@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "name": "legal-fact-finding-project-test",
+  "builds": [
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "public": true
+}
