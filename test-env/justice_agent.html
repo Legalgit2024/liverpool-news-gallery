@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Justice Agent Researcher</title>
+    <style>
+        :root {
+            --bg-color: #f4f4f4;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --accent-color: #007BFF;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #ffffff;
+            --accent-color: #3498db;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .research-form {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid var(--accent-color);
+            border-radius: 4px;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        #results {
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Justice Agent Researcher</h1>
+        <div class="research-form">
+            <textarea id="query" placeholder="Enter your research query..."></textarea>
+            <button onclick="startResearch()">Start Research</button>
+        </div>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        async function startResearch() {
+            const query = document.getElementById('query').value;
+            const results = document.getElementById('results');
+            
+            results.textContent = 'Researching...';
+            
+            try {
+                const response = await fetch('/api/research', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query })
+                });
+                
+                const data = await response.json();
+                results.textContent = data.result;
+            } catch (error) {
+                results.textContent = 'Error: ' + error.message;
+            }
+        }
+
+        // Check if dark mode is preferred
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+</body>
+</html>
