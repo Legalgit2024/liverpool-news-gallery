@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Thumbnail Gallery</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg-color: #f5f7fa;
+            --text-color: #1d1d1f;
+            --card-bg: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.06);
+            --accent: #0071e3;
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --premium-gradient: linear-gradient(135deg, #6366f1, #8b5cf6, #d946ef);
+            --glow: 0 0 20px rgba(99, 102, 241, 0.5);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #000000;
+            --text-color: #f5f5f7;
+            --card-bg: #1d1d1f;
+            --shadow: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: var(--transition);
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--premium-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: var(--glow);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .premium-button {
+            background: transparent;
+            color: var(--text-color);
+            border: 1px solid transparent;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .premium-button::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--premium-gradient);
+            z-index: -1;
+            border-radius: 31px;
+            animation: borderGlow 3s linear infinite;
+        }
+
+        .premium-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--glow);
+        }
+
+        @keyframes borderGlow {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .research-output {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-top: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .research-output pre {
+            font-family: 'SF Mono', Monaco, Consolas, monospace;
+            white-space: pre-wrap;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .research-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .research-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .research-meta {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Keep existing styles for gallery and other components */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            padding: 12px;
+        }
+
+        .thumbnail-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 4px 6px var(--shadow), 0 0 1px var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .thumbnail-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--glow);
+        }
+
+        /* Rest of your existing styles */
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="logo">Link Thumbnail Gallery</div>
+        <div class="nav-buttons">
+            <button class="premium-button" onclick="toggleTheme()">🌞 Theme</button>
+            <button class="premium-button" onclick="switchTab('gallery')">Gallery</button>
+            <button class="premium-button" onclick="switchTab('agent')">Justice Agent</button>
+            <button class="premium-button" onclick="shareGallery()">Share</button>
+            <button class="premium-button" onclick="window.location.href='index.html'">Home</button>
+        </div>
+    </nav>
+
+    <div id="gallery-tab" class="tab-content active">
+        <div class="research-output">
+            <div class="research-header">
+                <div class="research-title">Link Collection</div>
+                <div class="research-meta">Add links to generate thumbnails</div>
+            </div>
+            <textarea id="linkInput" placeholder="Paste your links here (one per line)" 
+                      style="width: 100%; height: 100px; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: var(--card-bg); color: var(--text-color); margin-bottom: 16px;"></textarea>
+            <button class="premium-button" onclick="processLinks()">Generate Thumbnails</button>
+        </div>
+        <div class="gallery-grid" id="gallery"></div>
+    </div>
+
+    <div id="agent-tab" class="tab-content">
+        <div class="research-output">
+            <div class="research-header">
+                <div class="research-title">Justice Agent Research</div>
+                <div class="research-meta">AI-powered legal research assistant</div>
+            </div>
+            <iframe src="justice_agent.html" style="width: 100%; height: 80vh; border: none; border-radius: 8px;"></iframe>
+        </div>
+    </div>
+
+    <div class="toast" id="toast" style="position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 12px 24px; border-radius: 30px; display: none; z-index: 1000; backdrop-filter: blur(8px);">
+        Link copied to clipboard!
+    </div>
+
+    <!-- Keep your existing JavaScript unchanged -->
+    <script>
+        // Your existing JavaScript code
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        function createThumbnailCard(data) {
+            const card = document.createElement('div');
+            card.className = 'thumbnail-card';
+
+            const content = `
+                <div class="thumbnail-image" style="background-image: url('${data.image}'); background-size: cover; background-position: center; height: 200px;"></div>
+                <div style="padding: 20px;">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 8px;">${data.title}</h3>
+                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 12px;">${data.summary}</p>
+                    <p style="font-size: 0.8rem; color: #888;">${data.date}</p>
+                </div>
+            `;
+
+            card.innerHTML = content;
+            card.onclick = () => window.open(data.url, '_blank');
+
+            return card;
+        }
+
+        async function processLinks() {
+            const linksText = document.getElementById('linkInput').value;
+            const links = linksText.split('\n').filter(link => link.trim());
+            const gallery = document.getElementById('gallery');
+            gallery.innerHTML = '';
+
+            const thumbnailsData = links.map(link => ({
+                url: link,
+                title: link.split('/').pop() || 'Untitled',
+                summary: 'Click to visit the link',
+                image: 'https://via.placeholder.com/400x300?text=Thumbnail',
+                date: new Date().toLocaleDateString()
+            }));
+
+            try {
+                thumbnailsData.forEach(data => {
+                    gallery.appendChild(createThumbnailCard(data));
+                });
+
+                document.getElementById('linkInput').value = '';
+                showToast('Thumbnails generated successfully!');
+            } catch (error) {
+                console.error('Error generating thumbnails:', error);
+                showToast('Error generating thumbnails');
+            }
+        }
+
+        // Check URL parameters for initial tab
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialTab = urlParams.get('tab');
+        if (initialTab) {
+            switchTab(initialTab);
+        }
+    </script>
+</body>
+</html>
